@@ -19,7 +19,8 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@decorators/*": ["./decorators/*"],
-      "@db/*": ["./modules/dal/*"]
+      "@db/*": ["./modules/dal/*"],
+      "@util/*": ["./util/*"]
     }
   }
 }
