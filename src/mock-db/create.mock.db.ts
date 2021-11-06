@@ -3,6 +3,8 @@ import * as path from 'path';
 
 import * as fs from 'fs-extra';
 
+import Database from '@db/types/database.interface';
+
 import { roles } from './data/roles.data';
 import { skills } from './data/skills.data';
 
@@ -12,7 +14,7 @@ export const createMockDb = async () => {
   const dbDirectory = path.join(__dirname, '..', 'data', 'json');
   await fs.ensureDir(dbDirectory);
   const filepath = path.join(dbDirectory, 'db.json');
-  const data = { roles, skills };
+  const data: Database = { roles, skills, users: [] };
 
   await fs.writeJson(filepath, data);
   console.info('Mock DB created.\n');
