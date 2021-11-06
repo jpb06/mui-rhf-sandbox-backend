@@ -5,6 +5,7 @@ import { DataPushService } from './core/data-push.service';
 import { DbPathService } from './core/db-path.service';
 import { RolesStoreService } from './stores/roles-store.service';
 import { SkillsStoreService } from './stores/skills-store.service';
+import { UsersStoreService } from './stores/users-store.service';
 
 @Module({
   providers: [
@@ -13,7 +14,8 @@ import { SkillsStoreService } from './stores/skills-store.service';
     DataPushService,
     RolesStoreService,
     SkillsStoreService,
+    UsersStoreService,
   ],
-  exports: [RolesStoreService, SkillsStoreService],
+  exports: [RolesStoreService, SkillsStoreService, UsersStoreService],
 })
 export class DalModule {}

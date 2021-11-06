@@ -9,7 +9,7 @@ export class RolesStoreService {
   constructor(private readonly dataPull: DataPullService) {}
 
   async getAll(): Promise<Array<Role>> {
-    const data = await this.dataPull.getRoles();
+    const data = await this.dataPull.getBy('roles');
 
     return data;
   }

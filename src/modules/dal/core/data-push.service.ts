@@ -1,19 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs-extra';
 
-import { Role } from '@db/types/role.interface';
-import { Skill } from '@db/types/skill.interface';
+import Database from '@db/types/database.interface';
 
 import { DataPullService } from './data-pull.service';
 import { DbPathService } from './db-path.service';
 
-type Collection = 'roles' | 'skills';
-type PersistedType = Role | Skill;
-
-interface PersistAllParams {
-  roles?: Array<Role>;
-  skills?: Array<Skill>;
-}
+type Unpacked<T> = T extends (infer U)[] ? U : T;
 
 @Injectable()
 export class DataPushService {
@@ -22,8 +15,11 @@ export class DataPushService {
     private readonly dataPull: DataPullService,
   ) {}
 
-  async persist(item: PersistedType, type: Collection): Promise<PersistedType> {
-    let data = await this.getBy(type);
+  async persist<K extends keyof Database, V extends Unpacked<Database[K]>>(
+    item: V,
+    key: K,
+  ): Promise<V> {
+    let data = (await this.dataPull.getBy(key)) as Array<V>;
 
     const existingItem = data.find((el) => el.id === item.id);
     if (existingItem) {
@@ -32,41 +28,19 @@ export class DataPushService {
       data.push(item);
     }
 
-    await this.persistBy(type, data);
+    await this.persistAll({ [key]: data });
+
     return item;
   }
 
-  private async getBy(collection: Collection): Promise<Array<PersistedType>> {
-    let data: Array<PersistedType>;
+  private async persistAll(db: Partial<Database>) {
+    const data = await this.dataPull.getAll();
 
-    switch (collection) {
-      case 'roles':
-        data = (await this.dataPull.getRoles()) as Array<PersistedType>;
-        break;
-      case 'skills':
-        data = (await this.dataPull.getSkills()) as Array<PersistedType>;
-        break;
-    }
+    const alteredData = Object.entries(data).reduce(
+      (o, [key, value]) => ({ ...o, [key]: db[key] ?? value }),
+      {},
+    );
 
-    return data;
-  }
-
-  private async persistBy(collection: Collection, data: Array<PersistedType>) {
-    switch (collection) {
-      case 'roles':
-        await this.persistAll({ roles: data as Array<Role> });
-        break;
-      case 'skills':
-        await this.persistAll({ skills: data as Array<Skill> });
-        break;
-    }
-  }
-
-  private async persistAll({ roles, skills }: PersistAllParams) {
-    const data = {
-      roles: roles ?? (await this.dataPull.getRoles()),
-      skills: skills ?? (await this.dataPull.getSkills()),
-    };
-    await fs.writeJson(this.dbPath.getDbPath(), data);
+    await fs.writeJson(this.dbPath.getDbPath(), alteredData);
   }
 }
