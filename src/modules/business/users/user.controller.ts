@@ -18,7 +18,7 @@ export class UsersController {
     private readonly skillsStore: SkillsStoreService,
   ) {}
 
-  @Post()
+  @Post('signup')
   @ApiRoute({
     summary: 'Registers a user',
     badRequest: {},
