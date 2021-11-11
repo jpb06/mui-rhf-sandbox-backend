@@ -19,10 +19,6 @@ export class SignedUser {
 
   @Expose()
   @ApiProperty()
-  password: string;
-
-  @Expose()
-  @ApiProperty()
   @Type(() => RoleDto)
   role: RoleDto;
 
