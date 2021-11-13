@@ -21,7 +21,10 @@ export class RolesController {
   async getAllRoles(): Promise<RolesResultDto> {
     const data = await this.rolesStore.getAll();
 
-    // Adding an unknown role for giggles
-    return transformTo(RolesResultDto, [...data, 'Techpriest']);
+    return transformTo(RolesResultDto, [
+      ...data,
+      // Adding an unknown role for giggles
+      { id: 1000, name: 'Techpriest' },
+    ]);
   }
 }
