@@ -7,7 +7,7 @@
   "license": "MIT",
   "engines": {
     "node": "16.x",
-    "yarn": "1.22.10"
+    "yarn": "1.22.x"
   },
   "scripts": {
     "prebuild": "rimraf dist",
