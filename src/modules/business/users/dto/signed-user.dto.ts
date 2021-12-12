@@ -23,7 +23,7 @@ export class SignedUser {
   role: RoleDto;
 
   @Expose()
-  @ApiProperty()
+  @ApiProperty({ isArray: true, type: SkillDto })
   @Type(() => SkillDto)
   skills: Array<SkillDto>;
 
